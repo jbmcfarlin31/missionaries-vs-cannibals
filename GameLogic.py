@@ -36,11 +36,11 @@ class GameLogic(object):
         """ Handles the logic for updating each location """
 
         # DEBUG STATEMENTS
-        print("Variables before manipulation$$$$$$")
-        print(user_choice)
-        print("EAST", east_bank)
-        print("WEST", west_bank)
-        print(canoe)
+        #print("Variables before manipulation$$$$$$")
+        #print(user_choice)
+        #print("EAST", east_bank)
+        #print("WEST", west_bank)
+        #print(canoe)
 
         # Loop through the users choices and update each dictionary accordingly.
         for i in user_choice:
@@ -55,11 +55,11 @@ class GameLogic(object):
                         west_bank['cannibals'] = west_bank['cannibals'] + 1
 
                     # DEBUG STATEMENTS
-                    print("Variables east manipulation$$$$$$")
-                    print(user_choice)
-                    print("EAST", east_bank)
-                    print("WEST", west_bank)
-                    print(canoe)
+                    #print("Variables east manipulation$$$$$$")
+                    #print(user_choice)
+                    #print("EAST", east_bank)
+                    #print("WEST", west_bank)
+                    #print(canoe)
 
                 elif canoe['location'] == "west":
                     if i != "n":
@@ -71,11 +71,11 @@ class GameLogic(object):
                             west_bank['cannibals'] = west_bank['cannibals'] - 1
 
                     # DEBUG STATEMENTS
-                    print("Variables west manipulation$$$$$$")
-                    print(user_choice)
-                    print("EAST", east_bank)
-                    print("WEST", west_bank)
-                    print(canoe)
+                    #print("Variables west manipulation$$$$$$")
+                    #print(user_choice)
+                    #print("EAST", east_bank)
+                    #print("WEST", west_bank)
+                    #print(canoe)
 
                 else:
                     print("Nothing")
