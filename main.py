@@ -62,6 +62,11 @@ def update_highscores(player, duration):
 		top10scores.append(highPlayer + "," + highDuration)
 	f.close()
 
+	
+	# TODO:
+	#  - BUG: On insert of a new record, sometimes a new record gets inserted ahead of one it shouldn't have.
+	#    EX: List might return back 12s, 15s, 20s. If a current score is 10s, it is expected to be inserted before 12
+	#        although it might get inserted after 12.
 	if len(top10scores) == 0:
 		top10scores.insert(icount,"{},{}".format(player,duration))
 	else:
@@ -69,7 +74,8 @@ def update_highscores(player, duration):
 			delta = datetime.strptime(x.split(',')[1], "%H:%M:%S.%f")
 			compare_delta = timedelta(hours=delta.hour, minutes=delta.minute, seconds=delta.second, microseconds=delta.microsecond)
 			if duration < compare_delta:
-				#print("Updating score")
+				print("This score {} is better than this score {}".format(duration, compare_delta))
+				print("Updating score")
 				top10scores.insert(icount,"{},{}".format(player,duration))
 				break
 		icount += 1
@@ -240,7 +246,7 @@ def run():
 		display_win()
 
 		get_highscores()
-		
+
 	elif WinLoseCheck == "Loser":
 		display_lost()
 	else:
