@@ -74,7 +74,7 @@ def update_highscores(player, duration):
 				break
 		icount += 1
 
-	print(top10scores)
+	#print(top10scores)
 
 	if len(top10scores) > 10:
 		top10scores.pop()
@@ -232,7 +232,7 @@ def run():
 	if WinLoseCheck == "Winner":
 		end_time = datetime.now()
 		date_diff = end_time - start_time
-		print("You completed the game in: ", date_diff)
+		print("You completed the game in: ", date_diff, '\n')
 
 		# Update the highscore bank
 		update_highscores(player_name,date_diff)
