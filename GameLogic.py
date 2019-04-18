@@ -24,7 +24,7 @@ class GameLogic(object):
         print(output)
 
         if canoe['location'] == "west":
-            print("Canoe is on the west bank")
+            print("        Canoe is on the west bank")
         else:
             print("                                                 Canoe is on the east bank")
 
