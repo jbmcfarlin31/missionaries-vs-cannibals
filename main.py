@@ -1,5 +1,6 @@
 from GameLogic import GameLogic
 import sys
+from datetime import datetime, date, time
 
 west_bank = {"missionaries": 0, "cannibals": 0}
 east_bank = {"missionaries": 3, "cannibals": 3}
@@ -60,10 +61,39 @@ def display_lost():
 
 	print('\n')
 
+	response = input("Would you like to see the solution? Type 'y' for yes or 'n' for no: ")
+	response = str(response)
+
+	if response == "y":
+		show_solution()
+
 # --------------------------------------
+
+def show_solution():
+    print("||------------------------------------------------------------------||")
+    print("||                                                                  ||")
+    print("||  Missionaries vs. Cannibals solution                             ||")
+    print("||                                                                  ||")
+    print("||  1) Send two cannibals to the west bank                          ||")
+    print("||  2) Send one cannibal back to the east bank                      ||")
+    print("||  3) Send two cannibals back to the west bank                     ||")
+    print("||  4) Send one cannibal back to the east bank                      ||")
+    print("||  5) Send two missionaries back to the west bank                  ||")
+    print("||  6) Send one missionary and one cannibal back to the east bank   ||")
+    print("||  7) Send two missionaries to the west bank                       ||")
+    print("||  8) Send one cannibal back to the east bank                      ||")
+    print("||  9) Send two cannibals to the west bank                          ||")
+    print("||  10) Send one cannibal back to the east bank                     ||")
+    print("||  11) Send two cannibals back to the west bank                    ||")
+    print("||                                                                  ||")
+    print("||------------------------------------------------------------------||")
+
+    print('\n')
 
 def run():
 	""" The main method for running our game """
+
+	start_time = datetime.now()
 
 	# Class instantiation
 	obj = GameLogic()
@@ -84,11 +114,11 @@ def run():
 
 	    #call ask
 	    val_ask = obj.user_prompt(east_bank, west_bank, canoe)
-	    if val_ask[0] == "q" or val_ask[1] == "q" or val_ask[2] == "q":
+	    if val_ask[0] == "q" or val_ask[1] == "q":
+	        print("Thank you for playing!")
 	        sys.exit(1)
 	    else:
 	        # Update locations
-	        #print("Hello world ######", val_ask)
 	        result = obj.update_locations(val_ask, east_bank, west_bank, canoe)
 	        east_bank = result[0]
 	        west_bank = result[1]
@@ -98,6 +128,10 @@ def run():
 
 
 	if WinLoseCheck == "Winner":
+		end_time = datetime.now()
+		date_diff = end_time - start_time
+		print("You completed the game in: ", date_diff)
+
 		display_win()
 	elif WinLoseCheck == "Loser":
 		display_lost()
