@@ -1,11 +1,90 @@
 from GameLogic import GameLogic
+from datetime import datetime, date, time, timedelta
 import sys
-from datetime import datetime, date, time
+import os
 
 # Our global variables
 west_bank = {"missionaries": 0, "cannibals": 0}
 east_bank = {"missionaries": 3, "cannibals": 3}
 canoe = {"location": "east"}
+
+# Used for linux
+sfile = "/tmp/highscores.txt"
+
+# Used for Windows
+#sfile = "C:\\temp\\highscores.txt"
+
+def get_highscores():
+  # This method handles grabbing the current high scores before each game
+
+	if os.path.exists(sfile):
+		f = open(sfile, "r")
+	else:
+		f = open(sfile,"w+")
+
+	top10scores = []
+	print("\n")
+	print("=================")
+	print("High Scores")
+	print("=================")
+	print("Place  Name   ---> Duration")
+	print("-----  -----------------")
+
+	contents = f.read()
+	for line in contents.splitlines():
+		highPlayer = line.split(',')[0]
+		highDuration = line.split(',')[1]
+		top10scores.append(highPlayer + "," + highDuration)
+	f.close()
+
+	placecount = 1
+	for x in top10scores:
+		print(str(placecount) + '      ' + x.split(',')[0]+' ---> '+x.split(',')[1])
+		placecount += 1   
+
+	print("=================")
+	print("=================")
+
+	return top10scores
+
+def update_highscores(player, duration):
+	# This method handles updating the high score of each player
+	
+	icount = 0
+
+	top10scores = []
+
+	f = open(sfile, "r")
+	contents = f.read()
+	for line in contents.splitlines():
+		highPlayer = line.split(',')[0]
+		highDuration = line.split(',')[1]
+		top10scores.append(highPlayer + "," + highDuration)
+	f.close()
+
+	if len(top10scores) == 0:
+		top10scores.insert(icount,"{},{}".format(player,duration))
+	else:
+		for x in top10scores:
+			delta = datetime.strptime(x.split(',')[1], "%H:%M:%S.%f")
+			compare_delta = timedelta(hours=delta.hour, minutes=delta.minute, seconds=delta.second, microseconds=delta.microsecond)
+			if duration < compare_delta:
+				#print("Updating score")
+				top10scores.insert(icount,"{},{}".format(player,duration))
+				break
+		icount += 1
+
+	print(top10scores)
+
+	if len(top10scores) > 10:
+		top10scores.pop()
+
+	target = open(sfile,'w')
+	for x in top10scores:
+		target.write(x)
+		target.write("\n")
+
+	target.close()
 
 
 def display_story():
@@ -81,25 +160,25 @@ def display_lost():
 def show_solution():
 	""" This method handles the display of the solution to beat the game """
 
-    print("||------------------------------------------------------------------||")
-    print("||                                                                  ||")
-    print("||  Missionaries vs. Cannibals solution                             ||")
-    print("||                                                                  ||")
-    print("||  1) Send two cannibals to the west bank                          ||")
-    print("||  2) Send one cannibal back to the east bank                      ||")
-    print("||  3) Send two cannibals back to the west bank                     ||")
-    print("||  4) Send one cannibal back to the east bank                      ||")
-    print("||  5) Send two missionaries back to the west bank                  ||")
-    print("||  6) Send one missionary and one cannibal back to the east bank   ||")
-    print("||  7) Send two missionaries to the west bank                       ||")
-    print("||  8) Send one cannibal back to the east bank                      ||")
-    print("||  9) Send two cannibals to the west bank                          ||")
-    print("||  10) Send one cannibal back to the east bank                     ||")
-    print("||  11) Send two cannibals back to the west bank                    ||")
-    print("||                                                                  ||")
-    print("||------------------------------------------------------------------||")
+	print("||------------------------------------------------------------------||")
+	print("||                                                                  ||")
+	print("||  Missionaries vs. Cannibals solution                             ||")
+	print("||                                                                  ||")
+	print("||  1) Send two cannibals to the west bank                          ||")
+	print("||  2) Send one cannibal back to the east bank                      ||")
+	print("||  3) Send two cannibals back to the west bank                     ||")
+	print("||  4) Send one cannibal back to the east bank                      ||")
+	print("||  5) Send two missionaries back to the west bank                  ||")
+	print("||  6) Send one missionary and one cannibal back to the east bank   ||")
+	print("||  7) Send two missionaries to the west bank                       ||")
+	print("||  8) Send one cannibal back to the east bank                      ||")
+	print("||  9) Send two cannibals to the west bank                          ||")
+	print("||  10) Send one cannibal back to the east bank                     ||")
+	print("||  11) Send two cannibals back to the west bank                    ||")
+	print("||                                                                  ||")
+	print("||------------------------------------------------------------------||")
 
-    print('\n')
+	print('\n')
 
 def run():
 	""" The main method for running our game """
@@ -107,6 +186,9 @@ def run():
 	# Keep track of when the game was started... 
 	# this is so that if you win, we can display how long it took you
 	start_time = datetime.now()
+
+	# Display highscores - maybe?
+	get_highscores()
 
 	# Class instantiation
 	obj = GameLogic()
@@ -119,6 +201,11 @@ def run():
 
 	# Display the story so use knows what to do
 	display_story()
+
+	# Ask for player name so we know who to humiliate when they lose... just kidding.
+	# This will be used to keep track of high scores
+	player_name = input("Who is the brave soul playing this game?: ")
+	player_name = str(player_name)
 
 	#Begin game
 	while WinLoseCheck == 'continue to play':
@@ -146,6 +233,9 @@ def run():
 		end_time = datetime.now()
 		date_diff = end_time - start_time
 		print("You completed the game in: ", date_diff)
+
+		# Update the highscore bank
+		update_highscores(player_name,date_diff)
 
 		display_win()
 	elif WinLoseCheck == "Loser":
