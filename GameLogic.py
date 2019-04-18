@@ -1,7 +1,7 @@
 class GameLogic(object):
     
     def __init__(self):
-        # Initialize various variables
+        # Initialize various variables to be used across the class
         self.prompt_choices = {
         "m": "missionary",
         "c": "cannibal",
@@ -35,12 +35,14 @@ class GameLogic(object):
     def update_locations(self, user_choice, east_bank, west_bank, canoe):
         """ Handles the logic for updating each location """
 
+        # DEBUG STATEMENTS
         print("Variables before manipulation$$$$$$")
         print(user_choice)
         print("EAST", east_bank)
         print("WEST", west_bank)
         print(canoe)
 
+        # Loop through the users choices and update each dictionary accordingly.
         for i in user_choice:
             if i is not None and i is not "":
                 if canoe['location'] == "east":
@@ -52,6 +54,7 @@ class GameLogic(object):
                         east_bank['cannibals'] = east_bank['cannibals'] - 1
                         west_bank['cannibals'] = west_bank['cannibals'] + 1
 
+                    # DEBUG STATEMENTS
                     print("Variables east manipulation$$$$$$")
                     print(user_choice)
                     print("EAST", east_bank)
@@ -67,6 +70,7 @@ class GameLogic(object):
                             east_bank['cannibals'] = east_bank['cannibals'] + 1
                             west_bank['cannibals'] = west_bank['cannibals'] - 1
 
+                    # DEBUG STATEMENTS
                     print("Variables west manipulation$$$$$$")
                     print(user_choice)
                     print("EAST", east_bank)
@@ -76,6 +80,7 @@ class GameLogic(object):
                 else:
                     print("Nothing")
 
+        # Update which direction the canoe is heading
         if canoe['location'] == "east":
             canoe['location'] = "west"
         else:
@@ -86,6 +91,8 @@ class GameLogic(object):
 
     def check_for_win(self, east_bank, west_bank):
         """ Handles the logic needed for checking to see if there has been a win """
+
+        # DEBUG STATEMENTS
         #print("West bank MSN = {}".format(west_bank['missionaries']))
         #print("West bank CNB = {}".format(west_bank['cannibals']))
         #print("East bank MSN = {}".format(west_bank['missionaries']))
@@ -102,12 +109,15 @@ class GameLogic(object):
 
     def user_prompt(self, east_bank, west_bank, canoe):
         """ Handles the logic needed for asking a user for information """
+
+        # Set our variables real quick
         global response
         global response2
 
         response = ""
         response2 = ""
 
+        # Ask for user input for who to send to the west bank
         if canoe['location'] == "east":
             response = input("Who would you like to send to the west bank? Type 'm' for missionary or 'c' for cannibal: ")
             response = str(response)
@@ -118,6 +128,7 @@ class GameLogic(object):
             response2 = input("Who would you like to send next to the west bank? Type 'm' for missionary or 'c' for cannibal or 'q' to quit: ")
             response2 = str(response2)
 
+        # Ask for user input for who to send to the east bank
         if canoe['location'] == "west":
             response = input("Who would you like to take the boat back to the east bank? Type 'm' for missionary or 'c' for cannibal: ")
             response = str(response)
@@ -128,6 +139,7 @@ class GameLogic(object):
             response2 = input("Who would you like to send another person back to the east bank? Type 'm' for missionary, 'c' for cannibal, 'n' for no, or 'q' to quit: ")
             response2 = str(response2)
 
+        # Here we are performing error checking to ensure a selection that was chosen is a correct choice
         try:
             value = self.prompt_choices[response]
             value2 = self.prompt_choices[response2]
@@ -135,8 +147,9 @@ class GameLogic(object):
             print("That is not a valid choice. Please try again.")
             self.user_prompt(east_bank, west_bank, canoe)
 
+        # If user made a valid choice, we make sure the move they want to perform is valid and allowed
         if value != "quit" and value2 != "quit" and value != "no":
-
+            # Checks move to ensure it can be done and doesn't violate anything
             validate_move = self.ValidateMove(response, east_bank, west_bank, canoe, response2)
             if validate_move is True:
                 if value2 == "no":
@@ -204,7 +217,7 @@ class GameLogic(object):
         return False
 
     def ValidateMove(self, user_choice, east_bank, west_bank, canoe, user_choice2=None):
-        """ Handles the logic for validating a move """
+        """ Handles the logic for validating a move by calling upon it's helper method """
 
         if canoe['location'] == 'west':
             value = self._ValidateMove(west_bank, user_choice, user_choice2)
