@@ -128,6 +128,9 @@ class GameLogic(object):
             response2 = input("Who would you like to send next to the west bank? Type 'm' for missionary or 'c' for cannibal or 'q' to quit: ")
             response2 = str(response2)
 
+            if response2 == "q":
+                return (response2)
+
         # Ask for user input for who to send to the east bank
         if canoe['location'] == "west":
             response = input("Who would you like to take the boat back to the east bank? Type 'm' for missionary or 'c' for cannibal: ")
@@ -139,6 +142,9 @@ class GameLogic(object):
             response2 = input("Who would you like to send another person back to the east bank? Type 'm' for missionary, 'c' for cannibal, 'n' for no, or 'q' to quit: ")
             response2 = str(response2)
 
+            if response2 == "q":
+                return (response2)
+
         # Here we are performing error checking to ensure a selection that was chosen is a correct choice
         try:
             value = self.prompt_choices[response]
@@ -148,19 +154,24 @@ class GameLogic(object):
             self.user_prompt(east_bank, west_bank, canoe)
 
         # If user made a valid choice, we make sure the move they want to perform is valid and allowed
-        if value != "quit" and value2 != "quit" and value != "no":
-            # Checks move to ensure it can be done and doesn't violate anything
-            validate_move = self.ValidateMove(response, east_bank, west_bank, canoe, response2)
-            if validate_move is True:
-                if value2 == "no":
-                    print("\nSending a {}... good luck!".format(value))
-                else:
-                    print("\nSending a {} and a {}... good luck!".format(value, value2))
-
-                return (response, response2)
-            else:
+        if value != "no":
+            if canoe['location'] == "east" and value2 == "no":
                 print("Your selection is invalid - move will not work.")
                 self.user_prompt(east_bank, west_bank, canoe)
+
+            else:
+                # Checks move to ensure it can be done and doesn't violate anything
+                validate_move = self.ValidateMove(response, east_bank, west_bank, canoe, response2)
+                if validate_move is True:
+                    if value2 == "no":
+                        print("\nSending a {}... good luck!".format(value))
+                    else:
+                        print("\nSending a {} and a {}... good luck!".format(value, value2))
+
+                    return (response, response2)
+                else:
+                    print("Your selection is invalid - move will not work.")
+                    self.user_prompt(east_bank, west_bank, canoe)
         elif value == "no":
             print("Your selection is invalid - move will not work.")
             self.user_prompt(east_bank, west_bank, canoe)
