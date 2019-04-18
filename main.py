@@ -238,6 +238,9 @@ def run():
 		update_highscores(player_name,date_diff)
 
 		display_win()
+
+		get_highscores()
+		
 	elif WinLoseCheck == "Loser":
 		display_lost()
 	else:
