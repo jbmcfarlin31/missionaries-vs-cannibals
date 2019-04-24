@@ -48,9 +48,12 @@ def get_highscores():
 	return top10scores
 
 def update_highscores(player, duration):
-	# This method handles updating the high score of each player
+	""" This method handles updating the high score of each player """
 	
 	icount = 0
+
+	total_seconds = duration.total_seconds()
+	total_seconds_dec = float("%.2f" % total_seconds)
 
 	top10scores = []
 
@@ -62,21 +65,20 @@ def update_highscores(player, duration):
 		top10scores.append(highPlayer + "," + highDuration)
 	f.close()
 
-	
-	# TODO:
-	#  - BUG: On insert of a new record, sometimes a new record gets inserted ahead of one it shouldn't have.
-	#    EX: List might return back 12s, 15s, 20s. If a current score is 10s, it is expected to be inserted before 12
-	#        although it might get inserted after 12.
+	# This was originally inserting timdeltas to keep track of who has the fastest time, however, it got tricky inserting those values
+	# and performing data manipulation. So, instead, we are using the total amount of seconds it takes to complete the game.
+	# If it takes longer than a minute, the seconds would show something like 65 seconds for 1m5s. 
+
+	# This makes it easier to perform data manipulation and keep track of score. We can also format now.
 	if len(top10scores) == 0:
-		top10scores.insert(icount,"{},{}".format(player,duration))
+		top10scores.insert(icount,"{},{}".format(player,total_seconds_dec))
 	else:
 		for x in top10scores:
-			delta = datetime.strptime(x.split(',')[1], "%H:%M:%S.%f")
-			compare_delta = timedelta(hours=delta.hour, minutes=delta.minute, seconds=delta.second, microseconds=delta.microsecond)
-			if duration < compare_delta:
-				print("This score {} is better than this score {}".format(duration, compare_delta))
-				print("Updating score")
-				top10scores.insert(icount,"{},{}".format(player,duration))
+			if total_seconds_dec < float(x.split(',')[1]):
+				# DEBUG statements
+				#print("This score {} is better than this score {}".format(total_seconds_dec, x.split(',')[1]))
+				#print("Updating score")
+				top10scores.insert(icount,"{},{}".format(player,total_seconds_dec))
 				break
 		icount += 1
 
