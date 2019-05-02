@@ -1,6 +1,14 @@
 # missionaries-vs-cannibals
 A Python program of the Missionaries vs Cannibals game
 
+# Prequisites
+You will need PrettyTable installed for this to work
+```bash
+pip install PTable
+# OR if using Python3
+pip3 install PTable
+```
+
 # How to Play
 The task is simple - move all of the missionaries and cannibals from side of the bank to the other. Easy, right?
 
