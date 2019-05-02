@@ -2,10 +2,13 @@
 A Python program of the Missionaries vs Cannibals game
 
 # Prequisites
+Python 3+ or higher
+
 You will need PrettyTable installed for this to work
 ```bash
 pip install PTable
-# OR if using Python3
+
+# note if using Python 3 you might have to run it like so:
 pip3 install PTable
 ```
 
