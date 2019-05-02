@@ -1,4 +1,5 @@
 from GameLogic import GameLogic
+from prettytable import PrettyTable
 from datetime import datetime, date, time, timedelta
 import sys
 import os
@@ -15,82 +16,46 @@ sfile = "/tmp/highscores.txt"
 #sfile = "C:\\temp\\highscores.txt"
 
 def get_highscores():
-  # This method handles grabbing the current high scores before each game
+  	# This method handles grabbing the current high scores before each game
 
+  	# Creates a prettytable object for sorting and displaying highscores
+	table = PrettyTable()
+	table.field_names = ["Name","Duration"]
+
+	# Checks to see if the file exists, if not create it
 	if os.path.exists(sfile):
 		f = open(sfile, "r")
 	else:
 		f = open(sfile,"w+")
 
-	top10scores = []
 	print("\n")
-	print("=================")
-	print("High Scores")
-	print("=================")
-	print("Place  Name   ---> Duration")
-	print("-----  -----------------")
 
+	# Read in the contents to our prettytable object
 	contents = f.read()
 	for line in contents.splitlines():
-		highPlayer = line.split(',')[0]
-		highDuration = line.split(',')[1]
-		top10scores.append(highPlayer + "," + highDuration)
+		table.add_row([line.split(",")[0],line.split(",")[1]])
+
 	f.close()
 
-	placecount = 1
-	for x in top10scores:
-		print(str(placecount) + '      ' + x.split(',')[0]+' ---> '+x.split(',')[1])
-		placecount += 1   
+	# Set some table properties and print it
+	table.sortby = "Duration"
+	table.reversesort = False
+	table.title = "Highscores"
+	print(table.get_string(start=0,end=9))  
 
-	print("=================")
-	print("=================")
-
-	return top10scores
+	print("\n\n")
 
 def update_highscores(player, duration):
 	""" This method handles updating the high score of each player """
-	
-	icount = 0
 
+	# Grab the total seconds from our timedelta difference and format it
 	total_seconds = duration.total_seconds()
 	total_seconds_dec = float("%.2f" % total_seconds)
 
-	top10scores = []
-
-	f = open(sfile, "r")
-	contents = f.read()
-	for line in contents.splitlines():
-		highPlayer = line.split(',')[0]
-		highDuration = line.split(',')[1]
-		top10scores.append(highPlayer + "," + highDuration)
-	f.close()
-
-	# This was originally inserting timdeltas to keep track of who has the fastest time, however, it got tricky inserting those values
-	# and performing data manipulation. So, instead, we are using the total amount of seconds it takes to complete the game.
-	# If it takes longer than a minute, the seconds would show something like 65 seconds for 1m5s. 
-
-	# This makes it easier to perform data manipulation and keep track of score. We can also format now.
-	if len(top10scores) == 0:
-		top10scores.insert(icount,"{},{}".format(player,total_seconds_dec))
-	else:
-		for x in top10scores:
-			if total_seconds_dec < float(x.split(',')[1]):
-				# DEBUG statements
-				#print("This score {} is better than this score {}".format(total_seconds_dec, x.split(',')[1]))
-				#print("Updating score")
-				top10scores.insert(icount,"{},{}".format(player,total_seconds_dec))
-				break
-		icount += 1
-
-	#print(top10scores)
-
-	if len(top10scores) > 10:
-		top10scores.pop()
-
-	target = open(sfile,'w')
-	for x in top10scores:
-		target.write(x)
-		target.write("\n")
+	# Open the highscore file for appending so we can add our new values
+	target = open(sfile,'a')
+	target.write("{},{}".format(player, total_seconds_dec))
+	target.write("\n")
 
 	target.close()
 
@@ -251,6 +216,7 @@ def run():
 
 	elif WinLoseCheck == "Loser":
 		display_lost()
+
 	else:
 		pass
 
